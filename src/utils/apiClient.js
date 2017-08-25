@@ -1,31 +1,33 @@
-import { GET_LIST, GET_ONE } from 'admin-on-rest';
+import { GET_LIST, GET_ONE, DELETE } from 'admin-on-rest';
 import axios from 'axios';
 
 export const apiClient = (apiUrl, httpClient = axios) => {
 	const convertRESTRequestsToHTTP = (type, resource, params) => {
-		const options = {};
+		const options = {
+			baseURL: apiUrl
+		};
 		switch (type) {
 			case GET_LIST:
 				const { page, perPage } = params.pagination;
 				const { field, order } = params.sort;
 				options.method = 'get';
-				options.baseURL = apiUrl;
 				options.url = `/${resource}`;
 				options.params = {
 					...params.filter,
-					_sort: field,
-					_order: order,
-					_start: (page - 1) * perPage,
-					_end: (page * perPage) - 1,
+					...params.sort,
+					...params.pagination
 				};
 				break;
 			case GET_ONE:
 				options.method = 'get';
-				options.baseURL = apiUrl;
-				options.url = `/${resource}/${params.id}`
+				options.url = `/${resource}/${params.id}`;
+				break;
+			case DELETE:
+				options.method = 'delete';
+				options.url = `/${resource}/${params.id}`;
 				break;
 			default:
-				throw new Error(`Unsupported fetch action ${type}`);
+				throw new Error(`Unsupported api client action ${type}`);
 		}
 		return { options };
 	}
@@ -34,11 +36,12 @@ export const apiClient = (apiUrl, httpClient = axios) => {
 		const { header, data } = response;
 		switch (type) {
 			case GET_LIST:
-				const res = { data: data.data, total: data.total };
-				console.log(res);
-				return res;
+				console.log(data);
+				return data;
+			case DELETE:
+				return data;
 			default:
-				return { data: data }
+				return data;
 		}
 	}
 

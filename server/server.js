@@ -9,7 +9,11 @@ const app = express();
 
 app.disable('x-powered-by');
 
-app.use(cors());
+app.use(cors({
+	origin: '*',
+	methods: ['GET', 'DELETE', 'POST'],
+	exposedHeaders: ['Content-Range', 'X-Content-Range']
+}));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({

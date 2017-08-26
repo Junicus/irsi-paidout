@@ -9,6 +9,7 @@ import {
 	TextField,
 	NumberField,
 	DateField,
+	ReferenceField,
 	SimpleShowLayout,
 	SimpleForm,
 	DisabledInput,
@@ -24,7 +25,6 @@ import {
 } from 'admin-on-rest';
 
 const InvoiceFilter = (props) => {
-	console.log(props);
 	return (
 		<Filter {...props}>
 			<DateInput label="Selected Date" source="created_at" defaultValue={moment().toISOString()} alwaysOn />
@@ -51,7 +51,9 @@ export const InvoiceShow = (props) => (
 		<SimpleShowLayout>
 			<TextField source="id" />
 			<DateField source="created_at" />
-			<TextField source="vendor" />
+			<ReferenceField label="Vendor" source="vendor_id" reference="vendors">
+				<TextField source="vendor" />
+			</ReferenceField>
 			<NumberField source="amount" options={{ style: 'currency', currency: 'USD' }} />
 		</SimpleShowLayout>
 	</Show>
@@ -62,7 +64,9 @@ export const InvoiceEdit = (props) => (
 		<SimpleForm>
 			<DisabledInput source="id" />
 			<DateInput source="created_at" />
-			<TextInput source="vendor" />
+			<ReferenceInput label="Vendor" source="vendor_id" reference="vendors">
+				<SelectInput source="vendor" />
+			</ReferenceInput>
 			<NumberInput source="amount" />
 		</SimpleForm>
 	</Edit>
@@ -73,7 +77,7 @@ export const InvoiceCreate = (props) => (
 		<SimpleForm>
 			<DateInput label="Date" source="created_at" defaultValue={moment().toISOString()} />
 			<ReferenceInput label="Vendor" source="vendor_id" reference="vendors" allowEmpty>
-				<AutocompleteInput source="name" />
+				<SelectInput source="name" />
 			</ReferenceInput>
 			<NumberInput source="amount" />
 		</SimpleForm>

@@ -26,3 +26,21 @@ export const VendorList = (props) => (
 		</Datagrid>
 	</List >
 );
+
+export const VendorEdit = (props) => (
+	<Edit {...props}>
+		<SimpleForm>
+			<DisabledInput source="id" />
+			<TextInput source="name" />
+		</SimpleForm>
+	</Edit>
+);
+
+export const VendorCreate = (props) => (
+	<Create {...props}>
+		<SimpleForm>
+			<TextInput source="name" />
+		</SimpleForm>
+	</Create>
+);
+

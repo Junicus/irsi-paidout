@@ -53,12 +53,13 @@ export const apiClient = (apiUrl, httpClient = axios) => {
 			case UPDATE:
 				options.method = 'PUT';
 				options.url = `${apiUrl}/${resource}/${params.id}`;
-				options.body = JSON.stringify(params.data);
+				options.data = params.data;
 				break;
 			case CREATE:
+				console.log(params);
 				options.method = 'POST';
 				options.url = `${apiUrl}/${resource}`;
-				options.body = JSON.stringify(params.data);
+				options.data = params.data;
 				break;
 			case DELETE:
 				options.method = 'DELETE';

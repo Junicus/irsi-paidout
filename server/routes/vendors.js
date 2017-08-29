@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const monk = require('monk');
 const { optionsGenerator } = require('../generators/optionsGenerator');
+const { searchGenerator } = require('../generators/searchGenerator');
 
 const db = monk('localhost:27017/paidouts');
 
@@ -9,10 +10,13 @@ const moment = require('moment');
 
 router.get('/', function (req, res) {
 	const { query } = req;
+	console.log(query);
 	let options = {};
 	let search = {};
 	optionsGenerator({ options, query });
+	searchGenerator({ search, query });
 
+	console.log('search: ', search, 'options: ', options);
 	const vendorsCollection = db.get('vendors');
 	Promise.all([
 		vendorsCollection.find(search, options),

@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const monk = require('monk');
+const { optionsGenerator } = require('../generators/optionsGenerator');
+const { searchGenerator } = require('../generators/searchGenerator');
 
 const db = monk('localhost:27017/paidouts');
 
@@ -9,36 +11,39 @@ const moment = require('moment');
 const { getOptions } = require('../utils');
 
 router.get('/', (req, res) => {
-	console.log(req.query);
-	/*Promise.all([
-		invoicesCollection.find(search, getOptions(req.query)),
+	const { query } = req;
+	console.log(query);
+	let options = {};
+	let search = {};
+	optionsGenerator({ options, query });
+	searchGenerator({ search, query });
+
+	console.log('search: ', search, 'options: ', options);
+	const invoicesCollection = db.get('invoices');
+	Promise.all([
+		invoicesCollection.find(search, options),
 		invoicesCollection.count(search)
 	]).then(values => {
-		result = values[0].map(e => {
-			return Object.assign({}, e, { id: e._id });
-		});
-		res.json({ data: result, total: values[1] });
+		res.append('Content-Range', `invoices 0/${values[1]}`);
+		res.json(values[0]);
 	});
-*/
-	res.append('Content-Range', 'invoices 0/0');
-	res.json([]);
 });
 
 router.get('/:id', (req, res) => {
-	console.log(req.params);
 	const invoicesCollection = db.get('invoices');
 	invoicesCollection.findOne({ _id: req.params.id }).then(record => {
-		const data = Object.assign({}, record, { id: record._id });
-		res.json({ data: data });
+		res.json(data );
 	});
 });
 
 router.post('/', (req, res) => {
-	console.log(req.body);
+	console.log('post /', req.body);
 	const invoicesCollection = db.get('invoices');
 	invoicesCollection.insert(req.body).then(record => {
 		const data = Object.assign({}, record, { id: record._id });
-		res.json({ data: data });
+		invoicesCollection.findOneAndUpdate({ _id: record._id }, data).then(updated => {
+			res.json(data);
+		})
 	});
 });
 

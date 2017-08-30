@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const cors = require('cors');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
@@ -6,6 +7,8 @@ const invoices = require('./routes/invoices');
 const vendors = require('./routes/vendors');
 
 const app = express();
+
+mongoose.connect('mongodb://localhost/paidouts');
 
 app.disable('x-powered-by');
 

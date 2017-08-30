@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const monk = require('monk');
+
+const Vendor = require('../models/vendor');
+
 const { optionsGenerator } = require('../generators/optionsGenerator');
 const { searchGenerator } = require('../generators/searchGenerator');
-
-const db = monk('localhost:27017/paidouts');
 
 const moment = require('moment');
 
@@ -17,17 +17,32 @@ router.get('/', function (req, res) {
 	searchGenerator({ search, query });
 
 	console.log('search: ', search, 'options: ', options);
-	const vendorsCollection = db.get('vendors');
-	Promise.all([
-		vendorsCollection.find(search, options),
-		vendorsCollection.count(search)
-	]).then(values => {
+
+	var findPromise = new Promise((resolve, reject) => {
+		Vendor.find({}, (err, records) => {
+			if (err) reject(err);
+			resolve(records);
+		});
+	});
+
+	var countPromise = new Promise((resolve, reject) => {
+		Vendor.count({}, (err, count) => {
+			if (err) reject(err);
+			resolve(count);
+		});
+	});
+
+	Promise.all([findPromise, countPromise]).then(values => {
 		res.append('Content-Range', `vendors 0/${values[1]}`);
 		res.json(values[0]);
 	});
 });
 
-router.get('/:id', function (req, res) {
+router.get('/many', function(req, res) {
+
+});
+
+/*router.get('/:id', function (req, res) {
 	const vendorsCollection = db.get('vendors');
 	vendorsCollection.findOne({ _id: req.params.id }).then(record => {
 		res.json(record);
@@ -54,6 +69,6 @@ router.delete('/:id', function (req, res) {
 			res.json(data);
 		});
 	});
-});
+});*/
 
 module.exports = router;

@@ -37,7 +37,9 @@ export const InvoiceList = (props) => {
 		<List {...props} filters={<InvoiceFilter />}>
 			<Datagrid>
 				<TextField source="id" />
-				<TextField source="vendor" />
+				<ReferenceField label="vendor" source="vendor_id" reference="vendors">
+					<TextField source="vendor" />
+				</ReferenceField>
 				<NumberField source="amount" options={{ style: 'currency', currency: 'USD' }} />
 				<EditButton />
 				<ShowButton />
@@ -75,7 +77,7 @@ export const InvoiceEdit = (props) => (
 export const InvoiceCreate = (props) => (
 	<Create {...props}>
 		<SimpleForm>
-			<DateInput label="Date" source="created_at" defaultValue={moment().toISOString()} />
+			<DateInput label="Date" source="created_at" defaultValue={moment(moment().format('L')).toISOString()} />
 			<ReferenceInput label="Vendor" source="vendor_id" reference="vendors" allowEmpty>
 				<SelectInput source="name" />
 			</ReferenceInput>

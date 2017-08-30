@@ -11,6 +11,7 @@ import {
 
 export const apiClient = (apiUrl, httpClient = axios) => {
 	const convertRESTRequestToHTTP = (type, resource, params) => {
+		console.log('Type: ', type, 'Resource: ', resource, 'Params: ', params);
 		const options = {};
 		switch (type) {
 			case GET_LIST: {
@@ -90,12 +91,12 @@ export const apiClient = (apiUrl, httpClient = axios) => {
 		}
 	};
 
-    /**
-     * @param {string} type Request type, e.g GET_LIST
-     * @param {string} resource Resource name, e.g. "posts"
-     * @param {Object} payload Request parameters. Depends on the request type
-     * @returns {Promise} the Promise for a REST response
-     */
+	/**
+	 * @param {string} type Request type, e.g GET_LIST
+	 * @param {string} resource Resource name, e.g. "posts"
+	 * @param {Object} payload Request parameters. Depends on the request type
+	 * @returns {Promise} the Promise for a REST response
+	 */
 	return (type, resource, params) => {
 		const { options } = convertRESTRequestToHTTP(type, resource, params);
 		return httpClient(options)

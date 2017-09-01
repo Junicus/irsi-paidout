@@ -8,16 +8,12 @@ const { searchGenerator } = require('../generators/searchGenerator');
 
 const moment = require('moment');
 
-router.get('/', function (req, res) {
-	const { query } = req;
-	console.log(query);
-	let options = {};
-	let search = {};
-	optionsGenerator({ options, query });
-	searchGenerator({ search, query });
+router.use((req, res, next) => {
+	console.log(req.query);
+	next();
+});
 
-	console.log('search: ', search, 'options: ', options);
-
+router.get('/', (req, res) => {
 	var findPromise = new Promise((resolve, reject) => {
 		Vendor.find({}, (err, records) => {
 			if (err) reject(err);
@@ -38,37 +34,39 @@ router.get('/', function (req, res) {
 	});
 });
 
-router.get('/many', function(req, res) {
-
-});
-
-/*router.get('/:id', function (req, res) {
-	const vendorsCollection = db.get('vendors');
-	vendorsCollection.findOne({ _id: req.params.id }).then(record => {
-		res.json(record);
+router.get('/:vendor_id', (req, res) => {
+	Vendor.findById(req.params.vendor_id, (err, vendor) => {
+		if (err) res.send(err);
+		res.json(vendor);
 	});
 });
 
-router.post('/', function (req, res) {
-	console.log('post /', req.body);
-	const vendorsCollection = db.get('vendors');
-	vendorsCollection.insert(req.body).then(record => {
-		const data = Object.assign({}, record, { id: record._id });
-		vendorsCollection.findOneAndUpdate({ _id: record._id }, data).then(updated => {
-			res.json(data);
-		})
+router.post('/', (req, res) => {
+	let vendor = new Vendor();
+	vendor.name = req.body.name;
+
+	vendor.save((err) => {
+		if (err) res.send(err);
+		res.json(vendor);
 	});
 });
 
-router.delete('/:id', function (req, res) {
-	console.log('delete /id', req.params);
-	const vendorsCollection = db.get('vendors');
-	vendorsCollection.findOne({ _id: req.params.id }).then(record => {
-		const data = Object.assign({}, record, { id: record._id });
-		vendorsCollection.remove({ _id: req.params.id }).then(value => {
-			res.json(data);
+router.put('/:vendor_id', (req, res) => {
+	Vendor.findById(req.params.vendor_id, (err, vendor) => {
+		if (err) res.send(err);
+		vendor.name = req.body.name;
+		vendor.save(err => {
+			if (err) res.send(err);
+			res.json(vendor);
 		});
 	});
-});*/
+});
+
+router.delete('/:vendor_id', (req, res) => {
+	Vendor.remove({ _id: req.params.vendor_id }, (err, vendor) => {
+		if (err) res.send(err);
+		res.json(vendor);
+	});
+});
 
 module.exports = router;

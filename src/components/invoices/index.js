@@ -38,7 +38,7 @@ export const InvoiceList = (props) => {
 			<Datagrid>
 				<TextField source="id" />
 				<ReferenceField label="vendor" source="vendor_id" reference="vendors">
-					<TextField source="vendor" />
+					<TextField source="name" />
 				</ReferenceField>
 				<NumberField source="amount" options={{ style: 'currency', currency: 'USD' }} />
 				<EditButton />
@@ -53,8 +53,8 @@ export const InvoiceShow = (props) => (
 		<SimpleShowLayout>
 			<TextField source="id" />
 			<DateField source="created_at" />
-			<ReferenceField label="Vendor" source="vendor_id" reference="vendors">
-				<TextField source="vendor" />
+			<ReferenceField label="vendor" source="vendor_id" reference="vendors">
+				<TextField source="name" />
 			</ReferenceField>
 			<NumberField source="amount" options={{ style: 'currency', currency: 'USD' }} />
 		</SimpleShowLayout>
@@ -66,8 +66,8 @@ export const InvoiceEdit = (props) => (
 		<SimpleForm>
 			<DisabledInput source="id" />
 			<DateInput source="created_at" />
-			<ReferenceInput label="Vendor" source="vendor_id" reference="vendors">
-				<SelectInput source="vendor" />
+			<ReferenceInput label="vendor" source="vendor_id" reference="vendors">
+				<SelectInput source="name" />
 			</ReferenceInput>
 			<NumberInput source="amount" />
 		</SimpleForm>

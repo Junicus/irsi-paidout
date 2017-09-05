@@ -7,7 +7,7 @@ const schema = new Schema({
 });
 
 schema.virtual('id').get(function () {
-	return this._id;
+	return this._id.toString();
 });
 
 module.exports = mongoose.model('Vendor', schema);

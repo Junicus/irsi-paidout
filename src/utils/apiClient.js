@@ -112,6 +112,9 @@ export default (apiUrl, httpClient = jsonApiHttpClient) => {
 				});
 				console.log(jsonData)
 				return { data: jsonData, total: json.meta['total'] };
+			case GET_ONE:
+				console.log(json);
+				return { data: Object.assign({}, { id: json.data.id }, json.data.attributes) };
 			case GET_MANY:
 				console.log(json);
 				jsonData = json.data.map(function (obj) {

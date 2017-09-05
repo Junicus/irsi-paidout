@@ -46,6 +46,9 @@ app.use((req, res, next) => {
 	next();
 });
 
+//app.use('/api/invoices', invoices);
+app.use('/vendors', vendors);
+
 app.route('/:type(invoices)')
 	.get(apiReqHandler).post(apiReqHandler).patch(apiReqHandler);
 app.route('/:type(invoices)/:id')
@@ -56,9 +59,6 @@ app.route('/:type(invoices)/:id/relationships/:relationship')
 app.use((req, res, next) => {
 	Front.sendError(new APIError(404, undefined, 'Not Found'), req, res);
 });
-
-//app.use('/api/invoices', invoices);
-app.use('/vendors', vendors);
 
 if (process.env.NODE_ENV === 'production') {
 	app.use(express.static('../build'));
